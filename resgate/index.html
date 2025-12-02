@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico: Salva Planta</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-green': '#047857',
+                        'neon-green': '#10B981',
+                        'alert-red': '#EF4444',
+                        'dark-bg': '#0F172A',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shake: {
+                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                            '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                            '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+        .fade-out-left { animation: fadeOutLeft 0.5s ease-in forwards; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOutLeft {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-50px); }
+        }
+
+        .image-option {
+            transition: all 0.3s ease;
+        }
+        .image-option:hover {
+            transform: scale(1.03);
+            border-color: #10B981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+        
+        .warning-gradient {
+            background: linear-gradient(180deg, rgba(239,68,68,0.15) 0%, rgba(15,23,42,1) 100%);
+            border: 1px solid rgba(239,68,68,0.4);
+        }
+    </style>
+</head>
+<body class="text-white font-sans min-h-screen flex items-center justify-center relative py-10">
+
+    <!-- Background Elements -->
+    <i class="fa-solid fa-bacteria text-9xl absolute top-10 left-10 opacity-5 animate-float text-red-500"></i>
+    <i class="fa-solid fa-leaf text-8xl absolute bottom-20 right-10 opacity-5 animate-float text-green-500" style="animation-delay: 1s;"></i>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="w-full max-w-md px-4 z-10 relative">
+        
+        <!-- Barra de Progresso -->
+        <div id="progress-container" class="mb-6 opacity-0 transition-opacity duration-500">
+            <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">
+                <span>Análise de Risco</span>
+                <span id="step-text">1/6</span>
+            </div>
+            <div class="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-brand-green to-neon-green transition-all duration-500 ease-out w-[10%]"></div>
+            </div>
+        </div>
+
+        <!-- TELA INICIAL -->
+        <div id="intro-screen" class="glass-card p-8 rounded-3xl text-center fade-in-up relative overflow-hidden">
+            <!-- Efeito de Scan -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-neon-green animate-pulse opacity-50"></div>
+
+            <!-- Ícone Moderno -->
+            <div class="w-28 h-28 mx-auto mb-6 rounded-full bg-gradient-to-br from-brand-green to-black flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)] border border-neon-green/20">
+                <i class="fa-solid fa-leaf text-5xl text-neon-green animate-pulse-slow"></i>
+            </div>
+
+            <h1 class="text-3xl font-display font-black mb-4 leading-tight">
+                Diagnóstico <br><span class="text-neon-green">Bio-Seguro</span>
+            </h1>
+            <p class="text-gray-400 mb-8 text-sm leading-relaxed">
+                Descubra qual praga está matando sua planta e se o ambiente da sua casa está seguro para crianças e animais.
+            </p>
+            <button onclick="startQuiz()" class="w-full bg-neon-green hover:bg-brand-green text-dark-bg font-bold py-4 rounded-xl text-lg transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                INICIAR SCAN AGORA <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+            </button>
+        </div>
+
+        <!-- CARD DE PERGUNTAS -->
+        <div id="quiz-card" class="hidden"></div>
+
+        <!-- TELA DE ALERTA -->
+        <div id="warning-screen" class="hidden glass-card warning-gradient p-8 rounded-3xl text-center fade-in-up relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-alert-red animate-pulse"></div>
+            
+            <div class="w-20 h-20 bg-alert-red/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-shake">
+                <i class="fa-solid fa-skull-crossbones text-4xl text-alert-red"></i>
+            </div>
+            
+            <h2 class="text-xl font-display font-black mb-4 text-white uppercase">
+                ALERTA DE CONTAMINAÇÃO ⚠️
+            </h2>
+            
+            <div class="text-left bg-black/40 p-4 rounded-xl border border-alert-red/30 mb-6">
+                <p class="text-gray-300 text-sm mb-4">
+                    Você sabia que inseticidas e tabletes liberam <strong>substâncias cumulativas</strong> que ficam no chão e no ar por semanas?
+                </p>
+                <ul class="text-xs text-gray-400 space-y-3">
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-biohazard text-alert-red mt-0.5 mr-2"></i> 
+                        <span>Atacam diretamente o <strong>FÍGADO</strong> de cães e gatos, aumentando drasticamente o risco de câncer.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-bug text-alert-red mt-0.5 mr-2"></i> 
+                        <span>Pragas não tratadas espalham <strong>LARVAS INVISÍVEIS</strong> pelo tapete e cortinas da sua casa.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-money-bill-wave text-alert-red mt-0.5 mr-2"></i> 
+                        <span>Você está jogando dinheiro fora em plantas que vão morrer de novo. É um ciclo sem fim.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="text-sm text-white font-bold mb-6">
+                Você precisa parar esse ciclo de veneno e prejuízo <strong>AGORA</strong>.
+            </p>
+
+            <button onclick="resumeQuiz()" class="w-full bg-alert-red hover:bg-red-700 text-white font-bold py-4 rounded-xl text-lg transition-all shadow-lg">
+                QUERO PROTEGER MINHA CASA <i class="fa-solid fa-shield-halved ml-2"></i>
+            </button>
+        </div>
+
+        <!-- LOADING -->
+        <div id="loading-screen" class="hidden glass-card p-10 rounded-3xl text-center">
+            <div class="relative w-24 h-24 mx-auto mb-6">
+                <div class="absolute inset-0 border-4 border-gray-700 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-neon-green rounded-full border-t-transparent animate-spin"></div>
+                <i class="fa-solid fa-leaf absolute inset-0 flex items-center justify-center text-3xl text-gray-400"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-2 animate-pulse text-white">Gerando Protocolo...</h2>
+            <p id="loading-text" class="text-xs text-neon-green font-mono">Calculando prejuízo evitado...</p>
+        </div>
+
+        <!-- TELA FINAL -->
+        <div id="result-screen" class="hidden glass-card p-0 rounded-3xl overflow-hidden border border-neon-green/30 shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+            <div class="bg-black/40 p-6 text-center border-b border-white/5">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-500/20 border border-red-500/50 rounded-full text-red-400 text-[10px] font-bold uppercase tracking-wider mb-4">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> Infestação Ativa Detectada
+                </div>
+                <h2 class="text-2xl font-display font-bold leading-tight text-white">
+                    Sua planta precisa de <br><span class="text-neon-green">Intervenção Imediata</span>
+                </h2>
+            </div>
+
+            <div class="p-6">
+                <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                    Baseado nas suas respostas, a praga já está contaminando o ambiente. Se você não agir em <strong>24 horas</strong>, o dano financeiro e o risco à saúde da sua casa aumentarão.
+                </p>
+
+                <!-- Box de Solução -->
+                <div class="bg-gradient-to-r from-brand-green/20 to-neon-green/10 border border-neon-green/30 rounded-xl p-4 mb-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fa-solid fa-file-prescription text-neon-green text-xl"></i>
+                        <h3 class="font-bold text-white text-sm">Protocolo de Emergência</h3>
+                    </div>
+                    <p class="text-xs text-gray-400">
+                        Receitas Caseiras de Quebra de Resistência. <br>
+                        <span class="text-neon-green">100% Seguro para Fígado de Pets e Crianças.</span>
+                    </p>
+                </div>
+
+                <!-- LINK ATUALIZADO PARA O SITE -->
+                <a href="https://dicamestra.com/" class="block w-full bg-neon-green hover:bg-white hover:text-brand-green text-dark-bg font-black py-4 rounded-xl text-center text-lg transition-all transform hover:scale-[1.02] shadow-[0_0_25px_rgba(16,185,129,0.4)] animate-pulse-slow">
+                    BAIXAR GUIA DE EMERGÊNCIA
+                </a>
+                
+                <div class="flex justify-center gap-4 mt-4 text-[10px] text-gray-500">
+                    <span class="flex items-center"><i class="fa-solid fa-shield-cat mr-1"></i> Pet Friendly</span>
+                    <span class="flex items-center"><i class="fa-solid fa-bolt mr-1"></i> Entrega Imediata</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            {
+                // PERGUNTA 1
+                type: 'image', 
+                question: "Olhe bem de perto. Com o que a praga se parece?",
+                disclaimer: true,
+                options: [
+                    { 
+                        img: "1cochonilha.jpg", 
+                        label: "Algodão Branco", 
+                        desc: "Parece mofo ou teia"
+                    },
+                    { 
+                        img: "2carapaça.jpg", 
+                        label: "Cascas/Verrugas", 
+                        desc: "Duras e grudadas" 
+                    },
+                    { 
+                        img: "3fungusgnats.jpg", 
+                        label: "Mosquitinhos", 
+                        desc: "Voam na terra/Lodo" 
+                    },
+                    { 
+                        img: "4pulgoes.jpg", 
+                        label: "Pontos Pretos/Mel", 
+                        desc: "Deixam grudento" 
+                    }
+                ]
+            },
+            {
+                // PERGUNTA 2
+                type: 'text',
+                question: "Como a planta está reagindo fisicamente?",
+                icon: "fa-plant-wilt",
+                options: [
+                    "Folhas amarelando e caindo",
+                    "Parou de crescer (Estagnada)",
+                    "Ficando murcha/triste",
+                    "Ainda parece normal, mas tem bicho"
+                ]
+            },
+            {
+                // PERGUNTA 3 (COPY CORRIGIDA AQUI)
+                type: 'text',
+                question: "Quem mais corre risco nesse ambiente?",
+                icon: "fa-house-chimney",
+                options: [
+                    "Tenho Gatos/Cachorros que lambem tudo",
+                    "Tenho Crianças pequenas", 
+                    "Só adultos, mas é fechado (ar condicionado)",
+                    "Eu durmo no mesmo ambiente da planta"
+                ]
+            },
+            // WARNING SCREEN
+            {
+                // PERGUNTA 4
+                type: 'text',
+                question: "Seja sincera: qual o tamanho do prejuízo até agora?",
+                icon: "fa-sack-dollar",
+                options: [
+                    "Já gastei muito com veneno inútil",
+                    "Tenho medo de perder essa planta cara",
+                    "Tenho nojo das larvas andando na casa",
+                    "Me sinto culpada por deixar morrer"
+                ]
+            },
+            {
+                // PERGUNTA 5
+                type: 'text',
+                question: "Como você se sente quando recebe visitas?",
+                icon: "fa-face-flushed",
+                options: [
+                    "Escondo a planta doente",
+                    "Sinto vergonha do desleixo",
+                    "Tenho medo que vejam os bichos",
+                    "Triste, queria minha casa bonita"
+                ]
+            },
+            {
+                // PERGUNTA 6
+                type: 'text',
+                question: "Se você pudesse eliminar o veneno e a praga hoje, você faria?",
+                icon: "fa-clock",
+                options: [
+                    "Sim, pela saúde da minha família",
+                    "Sim, para parar de perder dinheiro",
+                    "Sim, quero minha planta linda",
+                    "Com certeza, preciso de paz"
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let warningShown = false;
+
+        function startQuiz() {
+            document.getElementById('intro-screen').classList.add('fade-out-left');
+            document.getElementById('progress-container').classList.remove('opacity-0');
+            setTimeout(() => {
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('quiz-card').classList.remove('hidden');
+                renderQuestion();
+            }, 500);
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const container = document.getElementById('quiz-card');
+            
+            if (currentQuestion === 3 && !warningShown) {
+                container.classList.add('hidden');
+                document.getElementById('progress-container').classList.add('opacity-0');
+                document.getElementById('warning-screen').classList.remove('hidden');
+                warningShown = true;
+                return; 
+            }
+
+            let html = `<div class="glass-card p-6 rounded-3xl fade-in-up">`;
+            
+            if(q.type === 'text') {
+                html += `
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-neon-green/10 rounded-lg flex items-center justify-center text-neon-green">
+                            <i class="fa-solid ${q.icon}"></i>
+                        </div>
+                        <h2 class="text-lg font-bold leading-tight text-white">${q.question}</h2>
+                    </div>
+                    <div class="space-y-3">`;
+                q.options.forEach((opt) => {
+                    html += `
+                        <button onclick="nextStep()" class="w-full text-left p-4 rounded-xl border border-gray-600 bg-gray-800/50 hover:bg-gray-700 hover:border-neon-green hover:shadow-[0_0_10px_rgba(16,185,129,0.2)] transition-all flex justify-between items-center group">
+                            <span class="font-medium text-gray-200 group-hover:text-white text-xs sm:text-sm">${opt}</span>
+                            <i class="fa-solid fa-arrow-right text-gray-600 group-hover:text-neon-green"></i>
+                        </button>`;
+                });
+                html += `</div>`;
+            } else if (q.type === 'image') {
+                html += `
+                    <h2 class="text-lg font-bold mb-4 text-center">${q.question}</h2>
+                    ${q.disclaimer ? '<p class="text-[10px] text-gray-400 text-center mb-6 italic bg-black/20 py-1 rounded-lg"><i class="fa-solid fa-magnifying-glass mr-1"></i> Imagens ampliadas via microscópio para identificação</p>' : ''}
+                    <div class="grid grid-cols-2 gap-3">`;
+                q.options.forEach((opt) => {
+                    html += `
+                        <button onclick="nextStep()" class="image-option bg-gray-800/60 border border-gray-600 rounded-xl p-3 text-center hover:bg-gray-700">
+                            <img src="${opt.img}" class="w-full h-32 object-cover rounded-lg mb-3 opacity-90 hover:opacity-100">
+                            <p class="font-bold text-white text-xs mb-1">${opt.label}</p>
+                            <p class="text-[10px] text-gray-400 leading-tight">${opt.desc}</p>
+                        </button>`;
+                });
+                html += `</div>`;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+            updateProgressBar();
+        }
+
+        function resumeQuiz() {
+            document.getElementById('warning-screen').classList.add('hidden');
+            document.getElementById('progress-container').classList.remove('opacity-0');
+            document.getElementById('quiz-card').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function nextStep() {
+            const card = document.querySelector('#quiz-card > div');
+            card.classList.remove('fade-in-up');
+            card.classList.add('fade-out-left');
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    renderQuestion();
+                } else {
+                    showLoading();
+                }
+            }, 400);
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('step-text').innerText = `${currentQuestion + 1}/${questions.length}`;
+        }
+
+        function showLoading() {
+            document.getElementById('quiz-card').classList.add('hidden');
+            document.getElementById('progress-container').classList.add('opacity-0');
+            document.getElementById('loading-screen').classList.remove('hidden');
+            document.getElementById('loading-screen').classList.add('fade-in-up');
+
+            const steps = [
+                "Analisando nível de contaminação...",
+                "Calculando prejuízo financeiro...",
+                "Verificando segurança biológica...",
+                "DIAGNÓSTICO PRONTO."
+            ];
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                document.getElementById('loading-text').innerText = steps[i];
+                i++;
+                if (i >= steps.length) {
+                    clearInterval(interval);
+                    showResult();
+                }
+            }, 1000);
+        }
+
+        function showResult() {
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('fade-in-up');
+        }
+    </script>
+</body>
+</html>
